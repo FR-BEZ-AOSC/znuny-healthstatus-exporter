@@ -14,7 +14,7 @@ type Config struct {
 
 // LoadConfig manage all settings passed to the exporter
 func (c *Config) LoadConfig() (*Config, error) {
-	// Configure Viper to search for config.yaml in /etc/nergalio/ and current directory
+	// Configure Viper to search for znuny-exporter.yaml in /etc/ 
 	viper.SetConfigName("znuny-exporter")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("/etc/")
