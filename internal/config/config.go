@@ -19,6 +19,7 @@ func (c *Config) LoadConfig() (*Config, error) {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("/etc/")
 
+	// If the flag '--config-path' is set, get its value as the configuration file
 	if len(viper.GetString("config-path")) > 0 {
 		viper.SetConfigFile(viper.GetString("config-path"))
 	}
