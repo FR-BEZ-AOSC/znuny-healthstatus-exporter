@@ -1,8 +1,17 @@
 exporter:
+  # Address to listen to
   address: 0.0.0.0
+  # Port to listen to
   port: 9587
+  # Path to expose metrics
+  path: /metrics
 
 znuny:
+  # Domain of the application
   domain: znuny.domain.tld
+  # Token used to login
   token: string
+  # Whether or not the https protocol is used
   tls: true
+  # Exporter interval in seconds to sent healthcheck requests
+  interval: 5

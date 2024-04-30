@@ -31,9 +31,9 @@ func Handle() error {
 
 		w.Write([]byte(`
             <html>
-            <head><title>Volume Exporter Metrics</title></head>
+            <head><title>Healthcheck status Exporter</title></head>
             <body>
-            <h1>Prometheus Updates Exporter</h1>
+            <h1>Prometheus Znuny's Healthcheck Exporter</h1>
             <p><a href='` + cfg.Exporter.Path + `'>Metrics</a></p>
             </body>
             </html>

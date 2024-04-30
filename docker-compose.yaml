@@ -1,0 +1,24 @@
+---
+version: '3'
+
+networks:
+  net:
+
+services:
+  znuny-exporter:
+    image: github.com/fr-bez-aosc/znuny-exporter:0.0.1
+    container_name: znuny-exporter
+    build:
+      context: .
+      dockerfile: ./build/Dockerfile
+      args:
+        ARCH: amd64
+        OS: linux
+    environment:
+      ZE_ZNUNY_DOMAIN: 
+      ZE_ZNUNY_TOKEN: 
+      ZE_ZNUNY_TLS: true
+      ZE_ZNUNY_INTERVAL: 10
+    networks:
+      - net
+

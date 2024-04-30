@@ -47,10 +47,6 @@ func init() {
 	viper.BindPFlag("exporter.path", rootCmd.Flags().Lookup("exporter-path"))
 	viper.BindEnv("exporter.path", "ZE_EXPORTER_PATH")
 
-	rootCmd.Flags().String("exporter-interval", "", "Exporter interval in seconds to sent healthcheck requests")
-	viper.BindPFlag("exporter.interval", rootCmd.Flags().Lookup("exporter-interval"))
-	viper.BindEnv("exporter.interval", "ZE_EXPORTER_INTERVAL")
-
 	/*
 		Znuny configurations
 	*/
@@ -66,4 +62,9 @@ func init() {
 	rootCmd.Flags().String("znuny-tls", "", "Whether or not the https protocol is used")
 	viper.BindPFlag("znuny.tls", rootCmd.Flags().Lookup("znuny-tls"))
 	viper.BindEnv("znuny.tls", "ZE_ZNUNY_TLS")
+
+	rootCmd.Flags().String("znuny-interval", "", "Exporter interval in seconds to sent healthcheck requests")
+	viper.BindPFlag("znuny.interval", rootCmd.Flags().Lookup("znuny-interval"))
+	viper.BindEnv("znuny.interval", "ZE_ZNUNY_INTERVAL")
+
 }
