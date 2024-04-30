@@ -13,8 +13,8 @@ type Config struct {
 }
 
 // LoadConfig manage all settings passed to the exporter
-func (c *Config) LoadConfig() (*Config, error) {
-	// Configure Viper to search for znuny-exporter.yaml in /etc/ 
+func (c *Config) LoadConfig() error {
+	// Configure Viper to search for znuny-exporter.yaml in /etc/
 	viper.SetConfigName("znuny-exporter")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("/etc/")
@@ -26,18 +26,18 @@ func (c *Config) LoadConfig() (*Config, error) {
 
 	// Read configurations from file
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, err
+		return err
 	}
 
 	// Unmarshal configurations
 	if err := viper.Unmarshal(c); err != nil {
-		return nil, err
+		return err
 	}
 
 	// Automatic creation of the environment
 	viper.AutomaticEnv()
 
-	return c, nil
+	return nil
 }
 
 // Print display the configuration parameters for debug

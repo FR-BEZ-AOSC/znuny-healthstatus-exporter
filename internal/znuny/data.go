@@ -1,7 +1,7 @@
 package znuny
 
 // ResponseData define the global response structure of datas
-type ResponseData struct {
+type HealthCheck struct {
 	CommunicationLog   communicationLog   `json:"CommunicationLog"`
 	Daemon             string             `json:"Daemon"`
 	MailQueue          mailQueue          `json:"MailQueue"`

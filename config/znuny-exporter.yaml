@@ -5,3 +5,4 @@ exporter:
 znuny:
   domain: znuny.domain.tld
   token: string
+  tls: true

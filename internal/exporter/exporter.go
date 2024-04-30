@@ -1,35 +1,71 @@
 package exporter
 
 import (
-	cfg "github.com/fr-bez-aosc/znuny-exporter/internal/config"
-	api "github.com/fr-bez-aosc/znuny-exporter/internal/znuny"
+	"fmt"
+	"log"
+	"net/http"
+	"time"
+
+	"github.com/fr-bez-aosc/znuny-exporter/internal/config"
+	"github.com/fr-bez-aosc/znuny-exporter/internal/znuny"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
-	c cfg.Config
+	cfg config.Config
+
+	Data znuny.HealthCheck
 )
+
+// register create the exporter specificities
+func register() {
+	collector := NewHealthCheckCollector()
+	prometheus.MustRegister(collector)
+}
+
+// Handle set the metrics exposition
+func Handle() error {
+	http.Handle(cfg.Exporter.Path, promhttp.Handler())
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+
+		w.Write([]byte(`
+            <html>
+            <head><title>Volume Exporter Metrics</title></head>
+            <body>
+            <h1>Prometheus Updates Exporter</h1>
+            <p><a href='` + cfg.Exporter.Path + `'>Metrics</a></p>
+            </body>
+            </html>
+        `))
+	})
+	return http.ListenAndServe(fmt.Sprintf("%s:%d", cfg.Exporter.Address, cfg.Exporter.Port), nil)
+}
 
 // Serve launch the prometheus exporter
 func Serve() {
 	// Load the configuration parameters
-	config, err := c.LoadConfig()
-	if err != nil {
+	if err := cfg.LoadConfig(); err != nil {
 		panic(err)
 	}
 
-	// // Print the configurations for debug
-	// config.Print()
+	// Run datas recovery
+	go func() {
+		for {
+			// Get healthcheck status
+			if err := Data.Get(cfg); err != nil {
+				panic(err)
+			}
 
-	// Get healthcheck status
-	data, err := api.SendRequest(config.Znuny.Domain, config.Znuny.Token)
-	if err != nil {
-		panic(err)
-	}
+			// Wait the next datas recovery
+			time.Sleep(time.Duration(cfg.Znuny.Interval) * time.Second)
+		}
+	}()
 
-	// Print the response datas for debug
-	api.Format(data)
+	// Register the exporter specificities
+	register()
 
-	// // Launch the http server to expose metrics
-	// http.Handle("/metrics", promhttp.Handler())
-	// http.ListenAndServe(fmt.Sprintf("%s:%d", config.Exporter.Address, config.Exporter.Port), nil)
+	// Launch the http server to expose metrics
+	log.Printf("znuny_exporter starting on http://%s:%d%s", cfg.Exporter.Address, cfg.Exporter.Port, cfg.Exporter.Path)
+	log.Fatal(Handle())
 }
