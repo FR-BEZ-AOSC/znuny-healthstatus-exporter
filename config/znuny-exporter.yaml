@@ -15,3 +15,8 @@ znuny:
   tls: true
   # Exporter interval in seconds to sent healthcheck requests
   interval: 5
+
+logs:
+  # Path of the log file
+  path: /var/log/znuny-exporter.log
+

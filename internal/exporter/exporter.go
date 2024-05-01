@@ -2,14 +2,15 @@ package exporter
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
 	"github.com/fr-bez-aosc/znuny-exporter/internal/config"
+	"github.com/fr-bez-aosc/znuny-exporter/internal/middlewares"
 	"github.com/fr-bez-aosc/znuny-exporter/internal/znuny"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.uber.org/zap"
 )
 
 var (
@@ -46,15 +47,21 @@ func Handle() error {
 func Serve() {
 	// Load the configuration parameters
 	if err := cfg.LoadConfig(); err != nil {
-		panic(err)
+		middlewares.TemporaryLogger("Failed to load the configuration file", err)
 	}
+
+	// Initialize the logger
+	logger := middlewares.NewLogger(cfg.Logs.Path)
 
 	// Run datas recovery
 	go func() {
 		for {
 			// Get healthcheck status
 			if err := Data.Get(cfg); err != nil {
-				panic(err)
+				logger.Error(
+					"Something went wrong during data recovery",
+					zap.Error(err),
+				)
 			}
 
 			// Wait the next datas recovery
@@ -65,7 +72,17 @@ func Serve() {
 	// Register the exporter specificities
 	register()
 
+	// Send a log before starting the server
+	logger.Info(
+		"The exporter is starting",
+		zap.String("listenning", fmt.Sprintf("http://%s:%d", cfg.Exporter.Address, cfg.Exporter.Port)),
+	)
+
 	// Launch the http server to expose metrics
-	log.Printf("znuny_exporter starting on http://%s:%d%s", cfg.Exporter.Address, cfg.Exporter.Port, cfg.Exporter.Path)
-	log.Fatal(Handle())
+	if err := Handle(); err != nil {
+		logger.Error(
+			"Something went wrong with the web server",
+			zap.Error(err),
+		)
+	}
 }

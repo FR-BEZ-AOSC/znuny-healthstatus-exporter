@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Exporter exporter `mapstructure:"exporter"`
 	Znuny    znuny    `mapstructure:"znuny"`
+	Logs logs `mapstructure:"logs"`
 }
 
 // LoadConfig manage all settings passed to the exporter
