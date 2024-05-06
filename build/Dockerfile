@@ -3,16 +3,16 @@ ARG  OS=linux
 
 FROM golang:alpine3.19 AS builder
 
-ENV GOARCH=${ARCH}
-ENV GOOS=${OS}
+ARG  ARCH
+ARG  OS
 
 WORKDIR /opt
 
 COPY . .
 
-RUN go mod download
-RUN go mod verify
-RUN GOARCH=${GOARCH} GOOS=${GOOS} \
+RUN go mod download && go mod verify
+
+RUN GOARCH=${ARCH} GOOS=${OS} \
     go build -v -o znuny-exporter .
 
 FROM alpine:3.19

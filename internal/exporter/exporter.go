@@ -64,6 +64,13 @@ func Serve() {
 				)
 			}
 
+			// if err := Data.String(); err != nil {
+			// 	logger.Error(
+			// 		"Something went wrong during data printing",
+			// 		zap.Error(err),
+			// 	)
+			// }
+
 			// Wait the next datas recovery
 			time.Sleep(time.Duration(cfg.Znuny.Interval) * time.Second)
 		}

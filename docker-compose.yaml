@@ -21,4 +21,23 @@ services:
       ZE_ZNUNY_INTERVAL: 10
     networks:
       - net
+    ports:
+      - 9587:9587
+  prometheus:
+    image: bitnami/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./config/prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+    networks:
+      - net
+    ports:
+      - 9090:9090
+  alertmanager:
+    image: bitnami/alertmanager:latest
+    container_name: alertmanager
+    networks:
+      - net
+    ports:
+      - 9093:9093
+
 
